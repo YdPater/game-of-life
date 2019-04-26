@@ -4,6 +4,9 @@ var rows;
 var cols;
 var res = 5;
 var grid;
+var startbutton;
+var stopbutton;
+var start = false;
 
 function setup() {
   createCanvas(w, h);
@@ -11,12 +14,31 @@ function setup() {
   cols = width / res;
   rows = height / res;
   grid = make2DArray(cols, rows);
+  fillGridRandom();
+  frameRate(10);
+  startbutton = createButton("Start")
+    .position(0, h + 20)
+    .mousePressed(startGame);
+  stopbutton = createButton("Reset")
+    .position(0, h + 50)
+    .mousePressed(resetGame);
+}
+
+function startGame() {
+  start = true;
+}
+
+function resetGame() {
+  start = false;
+  fillGridRandom();
+}
+
+function fillGridRandom() {
   for (var i = 0; i < cols; i++) {
     for (var j = 0; j < rows; j++) {
       grid[i][j] = floor(random(2));
     }
   }
-  frameRate(10);
 }
 
 function draw() {
@@ -32,11 +54,13 @@ function draw() {
       }
     }
   }
-  var next = make2DArray(cols, rows);
-  var newgen = createNextGeneration(next);
-  delete next;
-  grid = newgen;
-  delete newgen;
+  if (start) {
+    var next = make2DArray(cols, rows);
+    var newgen = createNextGeneration(next);
+    delete next;
+    grid = newgen;
+    delete newgen;
+  }
 }
 
 function createNextGeneration(next) {
